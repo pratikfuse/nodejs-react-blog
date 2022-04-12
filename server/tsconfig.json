@@ -1,16 +1,18 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "removeComments": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
-        "target": "es6",
+        "emitDecoratorMetadata": true,
+        "target": "es2017",
         "declaration": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./dist",
         "baseUrl": "./",
-        "allowJs": true 
+        "allowJs": false
     },
     "include": [
         "src/**/*"
