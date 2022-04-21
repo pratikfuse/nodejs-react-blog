@@ -19,11 +19,11 @@ class Api {
    * @returns Promise<AxiosReponse<R>>
    */
   async get<R>(url: string, query: any = {}, options: AxiosRequestConfig = {}) {
-    return this.axios.get<R>(url, {
+    const {data} = await this.axios.get<R>(url, {
       params: query,
-
       ...options,
     });
+    return data;
   }
 
   /**
