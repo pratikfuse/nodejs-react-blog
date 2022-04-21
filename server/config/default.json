@@ -1,4 +1,19 @@
 {
-    "database": {},
-    "redis": {}
+    "auth": {
+        "secret": "my_secret_key",
+        "github": {
+            "clientID": "Iv1.a38a138d43209d7d",
+            "clientSecret": "07a418dc90a18551a04391ba705cbdb713a371b0",
+            "callbackURL": "http://localhost:3001/redirect"
+        }
+    },
+    "webUrl": "http://localhost:3000",
+    "aws": {
+        "region": "us-east-1",
+        "accessKey": "accessKeyId",
+        "secretAccessKey": "secretAccessKey"
+    },
+    "redis":{
+        "url": "redis://localhost:6379"
+    }
 }

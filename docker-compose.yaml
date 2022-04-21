@@ -1,34 +1,41 @@
-
-version: 3.0
+version: "3.8"
 services:
 # nginx server to host frontend application
   web:
     build: 
       context: web-app
-      dockerfile: Dockerfile.frontend
-      target: 
     networks:
       - app_network
     ports:
       - "8080:80"
 
-# Express server
-  app:
-    build: .
-    environment:
-      - PROCESS_MODE=cluster
-    ports:
-      - 
+# # Express server
+#   app:
+#     build: .
+#     environment:
+#       - PROCESS_MODE=cluster
+#     ports:
+#       - 
   localstack:
+    image: "localstack/localstack:0.12.5"
     ports:
       - "4566:4566"
+      - "4510-4559:4510-4559"
     environment:
-      - EDGE_PORT=4566
-      - SERVICES=dynamodb
+      - "PORT_WEB_UI=8082"
+      - "SERVICES=dynamodb,cloudformation"
+      - "DEFAULT_REGION=us-east-1"
+      - "HOSTNAME=127.0.0.1"
+      - "HOSTNAME_EXTERNAL=localhost"
+      - "USE_SSL=true"
+    volumes:
+      - "./localstack/init.sh:/usr/bin/init.sh"
+      - "./localstack/supervisord.conf:/etc/supervisord.conf"
+      - "./localstack/cloudformation-template.json:/opt/cloudformation-template.json"
     networks:
       - app_network
   redis:
-    image: redis:7.0
+    image: redis:alpine3.15
     ports:
       - "6379:6379"
     networks:
