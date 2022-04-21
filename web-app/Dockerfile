@@ -1,7 +1,7 @@
 ############################################
 # Builder stage to build frontend web app  # 
 ############################################
-FROM node:14 as webapp-builder
+FROM node:16-alpine as webapp-builder
 
 WORKDIR /build
 COPY package.json package-lock.json ./

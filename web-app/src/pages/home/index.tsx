@@ -1,17 +1,14 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { Header } from "../../components/header";
 import { ApplicationContextProvider } from "../../hooks/applicationContext";
-import { ArticleListPage } from "./ArticleListPage";
-import { ArticleViewPage } from "./ArticleViewPage";
 
-export const HomeRouter: React.FC = () => {
+export const Home: React.FC = () => {
   return (
     <ApplicationContextProvider>
-      <div className="wrapper">
-        <Routes>
-          <Route path={"/"} element={<ArticleListPage />} />
-          <Route path="/:articleId" element={<ArticleViewPage />} />
-        </Routes>
+      <div className="container-fluid">
+        <Header />
+        <Outlet />
       </div>
     </ApplicationContextProvider>
   );

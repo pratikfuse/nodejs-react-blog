@@ -4,17 +4,20 @@ import { withError } from "../utils";
 
 export interface IUserInfo {
   id: string;
-  name: string;
   avatar: string;
+  displayName: string;
+  username: string;
 }
 
 interface IApplicationContext {
   loading: boolean;
   userInfo?: IUserInfo;
+  isAuthenticated: boolean;
 }
 
-const initialValue = {
+const initialValue: IApplicationContext = {
   loading: false,
+  isAuthenticated: true
 };
 
 export const ApplicationContext =
@@ -26,15 +29,17 @@ export const useApplication = (): IApplicationContext => {
 export const ApplicationContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<IUserInfo>({} as IUserInfo);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const getUserInformation = useCallback(async () => {
     setLoading(true);
     const [error, user] = await withError(getUser());
     setLoading(false);
     if (error) {
-        return;
+      return;
     }
     setUserInfo(user);
+    setIsAuthenticated(true);
   }, []);
 
   useEffect(() => {
@@ -46,6 +51,7 @@ export const ApplicationContextProvider: React.FC = ({ children }) => {
       value={{
         loading,
         userInfo,
+        isAuthenticated
       }}
     >
       {loading ? <div>Loading</div> : children}
