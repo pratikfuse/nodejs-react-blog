@@ -32,25 +32,18 @@ export class ArticleRepository
     return response;
   }
 
-  async updateArticleById(
-    id: string,
-    title: string,
-    body: string,
-    userId: string
-  ) {
+  async updateArticleById(id: string, title: string, body: string) {
     return this.update(
       {
         id,
-        userId,
       },
       { title, body }
     );
   }
 
-  async deleteArticleById(id: string, userId: string) {
+  async deleteArticleById(id: string) {
     return await this.delete({
-      id: id,
-      userId,
+      id,
     });
   }
 }
