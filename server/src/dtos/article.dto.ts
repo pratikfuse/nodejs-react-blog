@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { IsOptional, IsString } from "class-validator";
 
 export class CreateArticleDto {
