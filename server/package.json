@@ -1,5 +1,5 @@
 {
-  "name": "decorator-routing",
+  "name": "assignment-web",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.75.0",
     "aws-sdk": "^2.1116.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -25,6 +26,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
+    "memorystore": "^1.6.7",
     "node-uuid": "^1.4.8",
     "passport": "^0.5.2",
     "passport-github2": "^0.1.12",
@@ -32,7 +34,8 @@
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.9.0",
     "tsconfig-paths": "^3.14.1",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/config": "^0.0.41",
@@ -43,6 +46,7 @@
     "@types/node": "^17.0.23",
     "@types/passport": "^1.0.7",
     "@types/passport-github2": "^1.2.5",
+    "@types/uuid": "^8.3.4",
     "@types/validator": "^13.7.2",
     "nodemon": "^2.0.15",
     "typescript": "^4.6.3"
