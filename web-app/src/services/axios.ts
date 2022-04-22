@@ -1,5 +1,6 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import config from '../config';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import config from "../config";
+import { withError } from "../utils";
 
 class Api {
   private axios: AxiosInstance;
@@ -7,8 +8,13 @@ class Api {
   constructor() {
     this.axios = axios.create({
       baseURL: config.baseUrl,
-      withCredentials: true
+      withCredentials: true,
     });
+  }
+
+  private async _sendResponse<T>(handler: Promise<T>) {
+    const [error, response] = await withError<T>(handler);
+    return [error, response];
   }
 
   /**
@@ -19,11 +25,12 @@ class Api {
    * @returns Promise<AxiosReponse<R>>
    */
   async get<R>(url: string, query: any = {}, options: AxiosRequestConfig = {}) {
-    const {data} = await this.axios.get<R>(url, {
-      params: query,
-      ...options,
-    });
-    return data;
+    const result = await this._sendResponse<R>(
+      this.axios
+        .get<R>(url, { params: query, ...options })
+        .then((response) => response.data)
+    );
+    return result;
   }
 
   /**
@@ -33,20 +40,25 @@ class Api {
    * @returns Promise<AxiosResponse<R>>
    */
   async post<D, R>(url: string, data: D, options?: AxiosRequestConfig) {
-    return this.axios.post<R, AxiosResponse<R>, D>(url, data, options);
+    return this._sendResponse<R>(
+      this.axios
+        .post<R, AxiosResponse<R>, D>(url, data, options)
+        .then((response) => response.data)
+    );
   }
 
   /**
-   *
    * @param url api url endpoing
    * @param data request data <D>
    * @param options AxiosRequestConfig
    * @returns Promise<AxiosResponse<R>>
    */
   async put<D, R>(url: string, data: D, options: AxiosRequestConfig = {}) {
-    return this.axios.put<R, D>(url, data, {
-      ...options,
-    });
+    return this._sendResponse<R>(
+      this.axios
+        .put<R, AxiosResponse<R>, D>(url, data, options)
+        .then((response) => response.data)
+    );
   }
 
   /**
@@ -56,17 +68,27 @@ class Api {
    * @param options AxiosRequestConfig
    * @returns Promise<AxiosResponse<R>>
    */
-  async delete<R>(url: string, query: any = {}, options: AxiosRequestConfig = {}) {
-    return this.axios.delete<R>(url, {
-      params: query,
-      ...options,
-    });
+  async delete<R>(
+    url: string,
+    query: any = {},
+    options: AxiosRequestConfig = {}
+  ) {
+    return this._sendResponse(
+      this.axios
+        .delete<R, AxiosResponse<R>>(url, {
+          params: query,
+          ...options,
+        })
+        .then((response) => response.data)
+    );
   }
 
   async patch<D, R>(url: string, data: D, options: AxiosRequestConfig = {}) {
-    return this.axios.patch<R>(url, data, {
-      ...options,
-    });
+    return this._sendResponse(
+      this.axios
+        .patch<R, AxiosResponse<R>, D>(url, data, options)
+        .then((response) => response.data)
+    );
   }
 }
 
