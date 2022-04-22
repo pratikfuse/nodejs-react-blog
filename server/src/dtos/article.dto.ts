@@ -1,11 +1,23 @@
-import { IsAlpha, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateArticleDto {
+  @IsOptional()
+  userId: string;
 
-    
-    @IsString()
-    title: string;
+  @IsString()
+  title: string;
 
-    @IsString()
-    body: string;
+  @IsString()
+  body: string;
+
+  @IsOptional()
+  image?: string;
+}
+
+export class GetArticlesQuery {
+  @IsOptional()
+  title: string;
+
+  @IsOptional()
+  body: string;
 }
