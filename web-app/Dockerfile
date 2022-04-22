@@ -5,12 +5,10 @@ FROM node:16-alpine as webapp-builder
 
 WORKDIR /build
 COPY package.json package-lock.json ./
-RUN ls
 RUN npm install
 COPY . .
-RUN ls
+
 RUN npm run build
-RUN ls
 
 #############################################
 # NGINX container to serve web app          #
