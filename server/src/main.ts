@@ -11,27 +11,17 @@ import { AuthController } from "./controllers/auth.controller";
 import cors from "cors";
 import { CacheService } from "./cache/cache";
 import connectRedis from "connect-redis";
+import memoryStre from "memorystore";
 import "reflect-metadata";
+import cluster from "cluster";
+import os from "os";
 
 useContainer(Container);
 
 const RedisStore = connectRedis(session);
+const MemoryStore = memoryStre(session);
 
 function setupMiddlewares(app: Application) {
-  app.use(
-    session({
-      secret: config.get("auth.secret"),
-      resave: true,
-      saveUninitialized: false,
-      // store session in redis store
-      store: new RedisStore({ client: CacheService.getInstance().client }),
-      cookie: {
-        secure: false,
-        httpOnly: true,
-      },
-      unset: "destroy",
-    })
-  );
   app.use(passport.initialize());
   app.use(passport.session());
 }
@@ -66,7 +56,7 @@ function setupPassportAuth(app: Application) {
   });
 
   passport.deserializeUser((user: any, done) => {
-    done(null, user.id);
+    done(null, user);
   });
 }
 
@@ -98,6 +88,21 @@ async function main() {
   const app = express();
   await setupCache();
   app.use(
+    session({
+      secret: config.get("auth.secret"),
+      resave: true,
+      saveUninitialized: false,
+      store: new RedisStore({
+        client: CacheService.getInstance().client,
+      }),
+      rolling: true,
+      cookie: {
+        secure: false,
+        maxAge: 1000000,
+      },
+    })
+  );
+  app.use(
     cors({
       origin: "http://localhost:3000",
       allowedHeaders: "",
@@ -108,6 +113,10 @@ async function main() {
   setupPassportAuth(app);
   setupPassportAuthRoutes(app);
   useExpressServer(app, {
+    currentUserChecker: async (action: Action) => {
+      const user = action.request.user;
+      return user;
+    },
     authorizationChecker: async (action: Action, roles: string[]) => {
       const isAuthenticated = action.request.isAuthenticated();
       return isAuthenticated;
@@ -119,4 +128,18 @@ async function main() {
   });
 }
 
-main();
+// run server in cluster
+if (process.env.PROCESS_MODE === "cluster" && cluster.isPrimary) {
+  const totalCPUs = os.cpus().length;
+
+  for (let i = 0; i < totalCPUs; i++) {
+    cluster.fork();
+  }
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+    console.log("Let's fork another worker!");
+    cluster.fork();
+  });
+} else {
+  main();
+}
