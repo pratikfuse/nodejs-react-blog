@@ -12,7 +12,7 @@
             "AttributeType": "S"
           },
           {
-            "AttributeName": "userId",
+            "AttributeName": "title",
             "AttributeType": "S"
           }
         ],
@@ -20,10 +20,6 @@
           {
             "AttributeName": "id",
             "KeyType": "HASH"
-          },
-          {
-            "AttributeName": "userId",
-            "KeyType": "RANGE"
           }
         ],
         "GlobalSecondaryIndexes": [
@@ -31,12 +27,12 @@
             "IndexName": "article-title-gsi",
             "KeySchema": [
               {
-                "AttributeName": "id",
+                "AttributeName": "title",
                 "KeyType": "HASH"
               }
             ],
             "Projection": {
-              "ProjectionType": "KEYS_ONLY"
+              "ProjectionType": "ALL"
             },
             "ProvisionedThroughput": {
               "ReadCapacityUnits": 5,
