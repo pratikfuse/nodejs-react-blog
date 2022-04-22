@@ -1,21 +1,26 @@
 version: "3.8"
 services:
-# nginx server to host frontend application
+# # nginx server to host frontend application
   web:
-    build: 
+    build:
       context: web-app
-    networks:
-      - app_network
     ports:
       - "8080:80"
 
-# # Express server
-#   app:
-#     build: .
-#     environment:
-#       - PROCESS_MODE=cluster
-#     ports:
-#       - 
+# Express server
+  app:
+    build: 
+      context: server
+    environment:
+      - PROCESS_MODE=cluster
+      - NODE_ENV=dockerenv
+    ports:
+      - 3001:3001
+    networks:
+      - app_network
+    depends_on:
+      - localstack
+      - redis
   localstack:
     image: "localstack/localstack:0.12.5"
     ports:
