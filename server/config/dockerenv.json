@@ -7,7 +7,7 @@
       "callbackURL": "http://localhost:3001/redirect"
     }
   },
-  "webUrl": "http://localhost:3000",
+  "webUrl": "http://localhost:8080",
   "aws": {
     "region": "us-east-1",
     "accessKey": "accessKeyId",
