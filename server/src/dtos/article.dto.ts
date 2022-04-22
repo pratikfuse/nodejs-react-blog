@@ -1,9 +1,6 @@
 import { IsOptional, IsString } from "class-validator";
 
 export class CreateArticleDto {
-  @IsOptional()
-  userId: string;
-
   @IsString()
   title: string;
 
