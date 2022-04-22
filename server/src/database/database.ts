@@ -13,7 +13,7 @@ export class Database {
   private constructor() {
     this.client = new AWS.DynamoDB.DocumentClient({
       region: config.get("aws.region"),
-      endpoint: "http://localhost:4566",
+      endpoint: config.get("aws.dynamodb.url"),
       credentials: {
         accessKeyId: config.get("aws.accessKey"),
         secretAccessKey: config.get("aws.secretAccessKey"),

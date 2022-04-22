@@ -1,15 +1,7 @@
 import { Service } from "typedi";
 import { BaseRepository } from "./base.repository";
-
 interface IArticleRepository {
   findAllArticles(query: any): Promise<any>;
-}
-
-interface Article {
-  id: string;
-  userId: string;
-  title: string;
-  content: string;
 }
 
 @Service({
@@ -18,7 +10,7 @@ interface Article {
   },
 })
 export class ArticleRepository
-  extends BaseRepository<Article>
+  extends BaseRepository<IArticle>
   implements IArticleRepository
 {
   constructor(tableName: string) {
@@ -29,13 +21,37 @@ export class ArticleRepository
     return this.selectAll(query);
   }
 
-  async findArticleById(id: string) {
+  async findArticleById(id: string, userId: string) {
     return this.selectOne({
-      ArticleID: id,
+      id,
+      userId,
     });
   }
 
-  async updateArticleById(id: string, title: string, content: string) {}
+  async createArticle(article: IArticle) {
+    const response = await this.insert(article);
+    return response;
+  }
 
-  async deleteArticleById(id: string) {}
+  async updateArticleById(
+    id: string,
+    title: string,
+    body: string,
+    userId: string
+  ) {
+    return this.update(
+      {
+        id,
+        userId,
+      },
+      { title, body }
+    );
+  }
+
+  async deleteArticleById(id: string, userId: string) {
+    return await this.delete({
+      id: id,
+      userId,
+    });
+  }
 }

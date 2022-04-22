@@ -5,10 +5,10 @@ import {
   DeleteItemInput,
   UpdateItemInput,
 } from "aws-sdk/clients/dynamodb";
-
+import { marshall } from "@aws-sdk/util-dynamodb";
 import { Database } from "../database";
 
-export abstract class BaseRepository<T = any> {
+export abstract class BaseRepository<T> {
   private _db: Database;
   private _tableName: string;
 
@@ -18,14 +18,29 @@ export abstract class BaseRepository<T = any> {
   }
 
   async selectAll(Key: any) {
+    const queryKeys = Object.keys(Key);
     const params: ScanInput = {
       TableName: this._tableName,
+      ...(queryKeys.length
+        ? {
+            FilterExpression: queryKeys
+              .map((k) => `${k} = :${k}`)
+              .join(" AND "),
+            ExpressionAttributeValues: queryKeys.reduce(
+              (accumulator, key, index) => ({
+                ...accumulator,
+                [`:${key}`]: Key[key],
+              }),
+              {}
+            ),
+          }
+        : {}),
     };
     const result = await this._db.client.scan(params).promise();
     return result.Items || [];
   }
 
-  protected async selectOne(Key: any) {
+  protected async selectOne<T>(Key: any) {
     const params: GetItemInput = {
       TableName: this._tableName,
       Key: Key,
@@ -34,10 +49,10 @@ export abstract class BaseRepository<T = any> {
     return result.Item;
   }
 
-  protected insert(data: any) {
+  protected insert(data: T) {
     const params: PutItemInput = {
       TableName: this._tableName,
-      Item: data,
+      Item: data as any,
     };
 
     return this._db.client.put(params).promise();
@@ -52,9 +67,25 @@ export abstract class BaseRepository<T = any> {
   }
 
   protected update(Key: any, data: any) {
+    const itemKeys = Object.keys(data);
     const params: UpdateItemInput = {
       TableName: this._tableName,
       Key,
+      ReturnValues: "ALL_NEW",
+      UpdateExpression: `SET ${Object.keys(data)
+        .map((k, index) => `#field${index} = :value${index}`)
+        .join(", ")}`,
+      ExpressionAttributeNames: itemKeys.reduce(
+        (accumulator, k, index) => ({ ...accumulator, [`#field${index}`]: k }),
+        {}
+      ),
+      ExpressionAttributeValues: itemKeys.reduce(
+        (accumulator, k, index) => ({
+          ...accumulator,
+          [`:value${index}`]: data[k],
+        }),
+        {}
+      ),
     };
     return this._db.client.update(params).promise();
   }
