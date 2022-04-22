@@ -40,14 +40,12 @@ export const ArticleViewPage: React.FC = () => {
         setLoading(true);
         const [error] = await deleteArticleById(articleId);
         if (error) {
-            toast.success("Article delete successfully");
             showError("Error deleting article");
             setLoading(false);
             setDeleteModal(false);
             return;
         }
-
-        showSuccess("Article delete successfully");
+        showSuccess("Article deleted successfully");
         setLoading(false);
         navigate('/');
     }
