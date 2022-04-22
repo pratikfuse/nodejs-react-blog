@@ -6,7 +6,7 @@
 
 - Create a new github app at https://github.com/settings/apps
 
-  - Add the client id and client secret keys to ![](server/config/default.json)
+  - Add the client id and client secret keys for the app to ![](server/config/default.json)
 
 - Start the localstack and redis servers using docker
   - Run `docker-compose up localstack redis`
@@ -23,6 +23,6 @@
 
 ### Running in docker containers
 
-- Add the client id and client secret keys to ![](server/config/dockerdev.json)
+- Add the client id and client secret keys for the github app to ![](server/config/dockerdev.json)
 - Start all containers using docker-compose
   - Run `docker-compose up `
