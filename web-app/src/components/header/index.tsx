@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 import config from '../../config';
 import { useApplication } from '../../hooks/applicationContext';
 
@@ -17,9 +18,12 @@ export const Header: React.FC = () => {
 
     return (<Navbar bg="light" expand="lg">
         <Container>
-            <Navbar.Brand href="/">React-blog</Navbar.Brand>
+            <NavLink to="/" className="navbar-brand">React-blog</NavLink>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+                <Nav>
+                    <NavLink to="/create" className="nav-link">Create</NavLink>
+                </Nav>
                 <Nav className="ms-auto">
 
                     <NavDropdown title={isAuthenticated && userInfo?.username ? userInfo.username : "Login"} id="basic-nav-dropdown">
