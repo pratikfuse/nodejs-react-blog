@@ -3,6 +3,12 @@ import { Service } from "typedi";
 import { InjectRepository } from "../database/repositories/utils";
 import { InjectCache } from "../cache/utils";
 import { CacheService } from "../cache/cache";
+import { v4 as uuidV4 } from "uuid";
+import {
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from "routing-controllers";
 
 @Service()
 export class ArticleService {
@@ -12,7 +18,13 @@ export class ArticleService {
   ) {}
 
   async findArticles(query: any = {}) {
-    const articleCache = await this._cacheService.getCache("articles");
+    const queryKeys = Object.keys(query).filter((k) => !!query[k]);
+    const cacheKey = `articles_${
+      queryKeys.length
+        ? `${queryKeys.map((key) => `${key}:${query[key]}`).join("+")}`
+        : ""
+    }`;
+    const articleCache = await this._cacheService.getCache(cacheKey);
     if (articleCache) {
       return JSON.parse(articleCache);
     }
@@ -21,5 +33,61 @@ export class ArticleService {
     return articles;
   }
 
-  async findArticleById(id: string) {}
+  async createArticle(article: IArticle) {
+    article.id = uuidV4();
+    const response = await this._articleRepository.createArticle(article);
+    return response;
+  }
+
+  async findArticleById(id: string, userId: string) {
+    const articleByIdCache = await this._cacheService.getCache("article_" + id);
+    if (articleByIdCache) return JSON.parse(articleByIdCache);
+    const article = await this._articleRepository.findArticleById(id, userId);
+    if (!article) {
+      throw new NotFoundError();
+    }
+    await this._cacheService.setCache("article_" + id, JSON.stringify(article));
+    return article;
+  }
+
+  async updateArticleById(
+    id: string,
+    articleContent: string,
+    title: string,
+    userId: string
+  ) {
+    const article = await this._articleRepository.findArticleById(id, userId);
+    if (!article) {
+      throw new NotFoundError();
+    }
+    if (article.userId !== userId) {
+      throw new UnauthorizedError();
+    }
+
+    const response = await this._articleRepository.updateArticleById(
+      id,
+      articleContent,
+      title,
+      userId
+    );
+    // invalidate existing cache
+    await this._cacheService.invalidateCache("article_" + id);
+
+    return response;
+  }
+
+  async deleteArticleById(id: string, userId: string) {
+    const article = await this._articleRepository.findArticleById(id, userId);
+    if (!article) {
+      throw new NotFoundError();
+    }
+    if (article.userId !== userId) {
+      throw new UnauthorizedError();
+    }
+    const response = await this._articleRepository.deleteArticleById(
+      id,
+      userId
+    );
+    return response;
+  }
 }
