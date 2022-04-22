@@ -3,19 +3,17 @@ import {
   Authorized,
   Controller,
   Get,
-  Post,
   Redirect,
   Req,
-  Res,
 } from "routing-controllers";
 import { Service } from "typedi";
 import config from "config";
-import passport from "passport";
 
 @Service()
 @Controller("/auth")
 export class AuthController {
-  @Post("/logout")
+  @Get("/logout")
+  @Redirect(config.get("webUrl"))
   async handleLogout(@Req() request: Request) {
     request.logout();
     await new Promise((resolve, reject) =>
@@ -24,11 +22,7 @@ export class AuthController {
         resolve(true);
       })
     );
-    return true;
   }
-
-  @Get("/callback")
-  handleCallback(@Req() request: Request, @Res() response: Response) {}
 
   @Get("/profile")
   @Authorized()
