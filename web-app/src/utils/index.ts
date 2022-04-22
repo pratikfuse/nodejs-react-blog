@@ -1,2 +1,10 @@
-export const withError = <T = any>(promise: Promise<T>) =>
-  promise.then((res) => [null, res]).catch((e) => [e]);
+export async function withError<T = any>(
+  promise: Promise<T>
+): Promise<Array<any>> {
+  try {
+    const res = await promise;
+    return [null, res];
+  } catch (e: any) {
+    return [e];
+  }
+}

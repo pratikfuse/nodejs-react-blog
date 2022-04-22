@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { MainRouter } from "./MainRouter";
 import reportWebVitals from "./reportWebVitals";
 import "./scss/styles.scss";
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <React.StrictMode>
