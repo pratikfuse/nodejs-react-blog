@@ -64,7 +64,7 @@ export const ArticleViewPage: React.FC = () => {
                     <Card.Text>
                         {article?.body}
                     </Card.Text>
-                    {userInfo?.id === article?.userId && <div className='d-flex justify-content-end'
+                    {userInfo && userInfo.id === article?.userId && <div className='d-flex justify-content-end'
                         style={{
                             marginTop: 10
                         }}>
@@ -82,9 +82,9 @@ export const ArticleViewPage: React.FC = () => {
 
             <Modal show={showDeleteModal} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>Confirm</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                <Modal.Body>Delete this article ?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setDeleteModal(false)}>
                         Close
