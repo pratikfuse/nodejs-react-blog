@@ -11,7 +11,10 @@
   "aws": {
     "region": "us-east-1",
     "accessKey": "accessKeyId",
-    "secretAccessKey": "secretAccessKey"
+    "secretAccessKey": "secretAccessKey",
+    "dynamodb": {
+      "url": "http://localhost:4566"
+    }
   },
   "redis": {
     "url": "redis://localhost:6379"
