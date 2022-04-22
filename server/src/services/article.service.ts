@@ -4,11 +4,7 @@ import { InjectRepository } from "../database/repositories/utils";
 import { InjectCache } from "../cache/utils";
 import { CacheService } from "../cache/cache";
 import { v4 as uuidV4 } from "uuid";
-import {
-  InternalServerError,
-  NotFoundError,
-  UnauthorizedError,
-} from "routing-controllers";
+import { NotFoundError, UnauthorizedError } from "routing-controllers";
 
 @Service()
 export class ArticleService {
@@ -68,8 +64,7 @@ export class ArticleService {
     const response = await this._articleRepository.updateArticleById(
       id,
       title,
-      articleContent,
-      userId
+      articleContent
     );
     // invalidate existing cache
     await this._cacheService.invalidateCache("article_" + id);
@@ -85,10 +80,7 @@ export class ArticleService {
     if (article.userId !== userId) {
       throw new UnauthorizedError();
     }
-    const response = await this._articleRepository.deleteArticleById(
-      id,
-      userId
-    );
+    const response = await this._articleRepository.deleteArticleById(id);
     await this._cacheService.invalidateCache("article_" + id);
     return response;
   }
