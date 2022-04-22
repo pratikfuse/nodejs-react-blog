@@ -28,8 +28,9 @@ export class ArticleService {
     if (articleCache) {
       return JSON.parse(articleCache);
     }
+
     const articles = await this._articleRepository.findAllArticles(query);
-    await this._cacheService.setCache("articles", JSON.stringify(articles));
+    await this._cacheService.setCache(cacheKey, JSON.stringify(articles));
     return articles;
   }
 
@@ -39,10 +40,10 @@ export class ArticleService {
     return response;
   }
 
-  async findArticleById(id: string, userId: string) {
+  async findArticleById(id: string) {
     const articleByIdCache = await this._cacheService.getCache("article_" + id);
     if (articleByIdCache) return JSON.parse(articleByIdCache);
-    const article = await this._articleRepository.findArticleById(id, userId);
+    const article = await this._articleRepository.findArticleById(id);
     if (!article) {
       throw new NotFoundError();
     }
@@ -52,11 +53,11 @@ export class ArticleService {
 
   async updateArticleById(
     id: string,
-    articleContent: string,
     title: string,
+    articleContent: string,
     userId: string
   ) {
-    const article = await this._articleRepository.findArticleById(id, userId);
+    const article = await this._articleRepository.findArticleById(id);
     if (!article) {
       throw new NotFoundError();
     }
@@ -66,8 +67,8 @@ export class ArticleService {
 
     const response = await this._articleRepository.updateArticleById(
       id,
-      articleContent,
       title,
+      articleContent,
       userId
     );
     // invalidate existing cache
@@ -77,7 +78,7 @@ export class ArticleService {
   }
 
   async deleteArticleById(id: string, userId: string) {
-    const article = await this._articleRepository.findArticleById(id, userId);
+    const article = await this._articleRepository.findArticleById(id);
     if (!article) {
       throw new NotFoundError();
     }
@@ -88,6 +89,7 @@ export class ArticleService {
       id,
       userId
     );
+    await this._cacheService.invalidateCache("article_" + id);
     return response;
   }
 }
