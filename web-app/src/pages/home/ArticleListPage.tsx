@@ -1,92 +1,52 @@
-import React, { useEffect } from "react";
-import api from "../../services/axios";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import { getArticles } from "../../services/articleService";
+import Loader from "../../components/Loader";
+import { showError } from "../../utils/notify";
 
 export const ArticleListPage: React.FC = () => {
+  const [articles, setArticles] = useState<IArticle[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const loadArticles = async () => {
+    setLoading(true);
+    const [error, articles] = await getArticles();
+    if (error) {
+      showError('Error fetching articles')
+    } else {
+      setArticles(articles);
+    }
+    setLoading(false);
+  }
+
   useEffect(() => {
-    api
-      .get(`/articles`)
-      .then(() => {
-        console.log("recieved");
-      })
-      .catch((e) => {
-        console.log("error");
-        console.log(e);
-      });
-  });
+    loadArticles();
+  }, []);
 
   return (
     <div className="wrapper">
+      {loading && <Loader />}
       <div className="support-grid"></div>
 
       <div className="band">
-        <div className="item-1">
-          <Link to="post/post1" className="card">
-            <div className="thumb" ></div>
-            <article>
-              <h1>International Artist Feature: Malaysia</h1>
-              <span>Mary Winkler</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-2">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>How to Conduct Remote Usability Testing</h1>
-              <span>Harry Brignull</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-3">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>Created by You, July Edition</h1>
-              <p>Welcome to our monthly feature of fantastic tutorial results created by you, the Envato Tuts+ community! </p>
-              <span>Melody Nieves</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-4">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>How to Code a Scrolling “Alien Lander” Website</h1>
-              <p>We’ll be putting things together so that as you scroll down from the top of the page you’ll see an “Alien Lander” making its way to touch down.</p>
-              <span>Kezz Bracey</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-5">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>How to Create a “Stranger Things” Text Effect in Adobe Photoshop</h1>
-              <span>Rose</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-6">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>5 Inspirational Business Portraits and How to Make Your Own</h1>
-
-              <span>Marie Gardiner</span>
-            </article>
-          </Link>
-        </div>
-        <div className="item-7">
-          <Link to="post/post1" className="card">
-            <div className="thumb"></div>
-            <article>
-              <h1>Notes From Behind the Firewall: The State of Web Design in China</h1>
-              <span>Kendra Schaefer</span>
-            </article>
-          </Link>
-        </div>
-      </div >
-    </div >
+        {
+          articles.map((article, index) => (
+            <div className={`item-${++index}`} key={article.id}>
+              <Link to={`post/${article.id}`} className="card">
+                <div className="thumb" style={{
+                  background: `url(https://placehold.jp/3d4070/ffffff/500x500.png?text=${article.title})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover'
+                }}></div>
+                <article>
+                  <h1>{article.title}</h1>
+                  <span>{article.body}</span>
+                </article>
+              </Link>
+            </div>
+          ))
+        }
+      </div>
+    </div>
   );
 };
