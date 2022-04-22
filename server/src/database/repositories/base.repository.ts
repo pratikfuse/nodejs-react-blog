@@ -17,10 +17,11 @@ export abstract class BaseRepository<T> {
     this._tableName = tableName;
   }
 
-  async selectAll(Key: any) {
+  async selectAll(Key: any, IndexName?: string) {
     const queryKeys = Object.keys(Key);
     const params: ScanInput = {
       TableName: this._tableName,
+      ...(IndexName ? { IndexName } : {}),
       ...(queryKeys.length
         ? {
             FilterExpression: queryKeys

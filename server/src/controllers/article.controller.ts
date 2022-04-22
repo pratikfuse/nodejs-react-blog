@@ -45,14 +45,8 @@ export class ArticleController {
   }
 
   @Get("/:articleId")
-  async getArticleById(
-    @Param("articleId") articleId: string,
-    @CurrentUser() user: any
-  ) {
-    const response = await this._articleService.findArticleById(
-      articleId,
-      user.id
-    );
+  async getArticleById(@Param("articleId") articleId: string) {
+    const response = await this._articleService.findArticleById(articleId);
     return response;
   }
 
@@ -78,7 +72,7 @@ export class ArticleController {
   @Authorized()
   async updateArticle(
     @Param("articleId") articleId: string,
-    @Body() article: Partial<CreateArticleDto>,
+    @Body() article: CreateArticleDto,
     @CurrentUser() user: any
   ): Promise<any> {
     const response = await this._articleService.updateArticleById(

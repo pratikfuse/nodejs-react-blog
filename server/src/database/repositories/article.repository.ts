@@ -18,13 +18,12 @@ export class ArticleRepository
   }
 
   findAllArticles(query: any): Promise<any> {
-    return this.selectAll(query);
+    return this.selectAll(query, "article-title-gsi");
   }
 
-  async findArticleById(id: string, userId: string) {
+  async findArticleById(id: string) {
     return this.selectOne({
       id,
-      userId,
     });
   }
 
