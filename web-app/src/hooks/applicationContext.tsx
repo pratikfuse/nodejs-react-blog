@@ -1,7 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import Loader from "../components/Loader";
 import { getUser } from "../services/userService";
-import { withError } from "../utils";
-
 export interface IUserInfo {
   id: string;
   avatar: string;
@@ -28,12 +27,12 @@ export const useApplication = (): IApplicationContext => {
 };
 export const ApplicationContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<IUserInfo>({} as IUserInfo);
+  const [userInfo, setUserInfo] = useState<IUserInfo>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const getUserInformation = useCallback(async () => {
     setLoading(true);
-    const [error, user] = await withError(getUser());
+    const [error, user] = await getUser();
     setLoading(false);
     if (error) {
       return;
@@ -54,7 +53,7 @@ export const ApplicationContextProvider: React.FC = ({ children }) => {
         isAuthenticated
       }}
     >
-      {loading ? <div>Loading</div> : children}
+      {loading ? <Loader /> : children}
     </ApplicationContext.Provider>
   );
 };
