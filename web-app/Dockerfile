@@ -16,5 +16,5 @@ RUN npm run build
 FROM nginx:latest
 WORKDIR /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=webapp-builder /build .
+COPY --from=webapp-builder /build/build .
 EXPOSE 80
