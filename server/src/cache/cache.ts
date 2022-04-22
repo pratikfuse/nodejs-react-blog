@@ -31,6 +31,10 @@ export class CacheService {
     return this._client.get(cacheKey);
   }
 
+  async invalidateCache(cacheKey: string) {
+    return this._client.del(cacheKey);
+  }
+
   async wrapWithCache(cacheKey: string, handler: any, cb: any, ...args: any[]) {
     const response = await handler(...args);
     return response;
