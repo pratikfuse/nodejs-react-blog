@@ -9,8 +9,7 @@ done
 
 sleep 1
 
-
-# Start up the stack!
+# Start up the cloudformation stack!
 awslocal cloudformation create-stack --template-body file:///opt/cloudformation-template.json --stack-name article-web
 
 echo "Tables created"

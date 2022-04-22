@@ -1,66 +1,62 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "AWS CloudFormation Template To Create a DynamoDB table",
-    "Resources": {
-        "ArticlesTable": {
-            "Type": "AWS::DynamoDB::Table",
-            "Properties": {
-                "TableName": "Articles",
-                "AttributeDefinitions": [
-                    {
-                        "AttributeName": "ArticleID",
-                        "AttributeType": "S"
-                    },
-                    {
-                        "AttributeName": "UserID",
-                        "AttributeType": "S"
-                    },
-                    {
-                        "AttributeName": "ArticleTitle",
-                        "AttributeType": "S"
-                    }
-                ],
-                "KeySchema": [
-                    {
-                        "AttributeName": "ArticleID",
-                        "KeyType": "HASH"
-                    },
-                    {
-                        "AttributeName": "UserID",
-                        "KeyType": "RANGE"
-                    }
-                ],
-                "GlobalSecondaryIndexes": [
-                    {
-                        "IndexName": "article-title-gsi",
-                        "KeySchema": [
-                            {
-                                "AttributeName": "ArticleTitle",
-                                "KeyType": "HASH"
-                            }
-                        ],
-                        "Projection": {
-                            "ProjectionType": "KEYS_ONLY"
-                        },
-                        "ProvisionedThroughput": {
-                            "ReadCapacityUnits": 5,
-                            "WriteCapacityUnits": 5
-                        }
-                    }
-                ],
-                "ProvisionedThroughput": {
-                    "ReadCapacityUnits": 5,
-                    "WriteCapacityUnits": 5
-                }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AWS CloudFormation Template To Create a DynamoDB table",
+  "Resources": {
+    "ArticlesTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "Articles",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "userId",
+            "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "article-title-gsi",
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "KEYS_ONLY"
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 5,
+              "WriteCapacityUnits": 5
             }
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
         }
-    },
-    "Outputs": {
-        "Articles": {
-            "Description": "Table Created using this template.",
-            "Value": {
-                "Ref": "ArticlesTable"
-            }
-        }
+      }
     }
+  },
+  "Outputs": {
+    "Articles": {
+      "Description": "Table Created using this template.",
+      "Value": {
+        "Ref": "ArticlesTable"
+      }
+    }
+  }
 }
