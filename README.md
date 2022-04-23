@@ -3,15 +3,13 @@
 ## How to run
 
 ### Running locally
-
 - Create a new github app at https://github.com/settings/apps
+  - Add the client id and client secret keys for the app to server/config/default.json file
 
-  - Add the client id and client secret keys for the app to ![](server/config/default.json)
-
-- Start the localstack and redis servers using docker
+- Start the localstack service for dynamodb and redis servers using docker
   - Run `docker-compose up localstack redis`
-- Start the backend node server
 
+- Start the backend node server
   - Run `cd server`
   - Run `npm install`
   - Run `npm run debug`
@@ -23,6 +21,6 @@
 
 ### Running in docker containers
 
-- Add the client id and client secret keys for the github app to ![](server/config/dockerdev.json)
+- Add the client id and client secret keys for the github app to server/config/dockerdev.json
 - Start all containers using docker-compose
   - Run `docker-compose up `
