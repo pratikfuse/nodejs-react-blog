@@ -41,17 +41,16 @@ export const UpdateArticlePage: React.FC = () => {
 
         }
     }
+    if(loading) {
+      return <Loader />
+    }
     return (
-        <>
-            {loading && <Loader />}
-
-            <Editor
-                handleSubmit={handleSubmit}
-                initialBody={article?.body}
-                initialTitle={article?.title}
-                isSaving={isSaving}
+          <Editor
+              handleSubmit={handleSubmit}
+              initialBody={article?.body}
+              initialTitle={article?.title}
+              isSaving={isSaving}
             />
-
-        </>
+        
     )
 }
